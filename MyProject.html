@@ -1,0 +1,300 @@
+<html lang="en">
+<head>
+
+  <!-- Webpage Title -->
+  <title>My Project</title>
+
+  <!-- Required meta tags -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  <!-- Bootstrap CSS -->
+  <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+
+  <!-- JS -->   
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" crossorigin="anonymous" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" crossorigin="anonymous" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"></script>
+
+  <!-- 구글폰트 -->
+  
+<link href="https://fonts.googleapis.com/css?family=Gamja+Flower&display=swap&subset=korean" rel="stylesheet">
+
+  <script>
+    function openclose() {
+      if ( $('#posting-box').css('display') == 'block' ) {
+        $('#posting-box').hide();
+        $('#btn-posting-box').text('New Voca 입력하기')
+      } else {
+        $('#posting-box').show();
+        $('#btn-posting-box').text('One day One Voca!')
+      }
+    }
+   
+function posting() {
+        let word = $('#posting_word').val();
+        let meaning = $('#posting_meaning').val();
+        let situation = $('#posting_situation').val();
+        let url = $('#posting_url').val();
+        let comment = $('#posting_comment').val();
+        let title = $('#posting_title').val();
+        let season = $('#posting_season').val();
+        let episode = $('#posting_episode').val();
+
+          $.ajax({
+          type: "POST",
+          url: "/post",
+          data: { word_give:word, meaning_give:meaning, situation_give:situation, url_give:url 
+            comment_give:comment, title_give:title, season_give:season, episode_give:episode },
+          success: function(response){
+            if(response['result'] == 'success'){
+              alert('저장 완료!');
+              window.location.reload();
+          }  else {
+              alert('저장 실패!')
+            }
+          }
+          
+        })
+      }
+
+    $(document).ready(function(){
+      $('#cards-box').html('');
+      listing();
+    });
+
+    function listing() {
+        $.ajax({
+          type: "GET",
+          url: "/post",
+          data: {},
+          success: function(response){
+             if (response['result'] == 'success') {
+               let orders = response['orders'];
+               console.log(orders);
+               for (let i = 0; i < orders.length; i++) {
+                 make_card(orders[i]['word'],orders[i]['meaning'],orders[i]['situation'],orders[i]['url']orders[i]['comment'],orders[i]['title'],orders[i]['season'],orders[i]['episode'],)
+               }
+             } else {
+               alert('단어를 받아오지 못했습니다');
+             }
+          }
+        })
+      }
+
+    function make_card(comment, desc, image, title, url) {
+      let temp_html = '<div class="card">\
+        <img class="card-img-top" src="'+image+'" alt="Card image cap">\
+        <div class="card-body">\
+          <a href="'+url+'" class="card-title">'+title+'</a>\
+          <p class="card-text">'+desc+'</p>\
+          <p class="card-text comment">'+comment+'</p>\
+        </div>\
+      </div>';
+      $('#cards-box').append(temp_html);
+    }
+  </script>
+
+  <!-- style -->
+  <style type="text/css">
+    * {
+      font-family: 'Gamja Flower', cursive;
+    }
+    .wrap {
+      width: 900px;
+      margin: auto;
+    }
+    .comment {
+      color: blue;
+      font-weight: bold;
+    }
+    .form-post {
+      max-width: 500px;
+      padding: 2rem;
+      margin: 2rem auto;
+      border-color: #e9ecef;
+      border-radius: 0.3rem;
+      border: solid;
+      display: block;
+    }
+    #posting-box {
+      display: none;
+    }
+  </style>
+
+</head>
+<body>
+
+
+   <style>html{margin-top:0 !important;}</style>
+    <div class="intro-content mt-5">
+      <div class="container">
+        <div class="row">
+          <div class="col-md-7 align-self-center">
+            <h1 class="display-4 mb-3">일상에 덧붙인 새로운 습관,<br> Netflix 단어장</h1>
+            <p class="lead mb-4">If we attend continually and promptly to the little that we can do, <br> we shall ere long be surprised to find how little remains that we cannot do.</p>
+          </div><!-- /.col-md-6 -->
+          <div class="col-md-5 ml-auto">
+        <br>
+        <br>
+        <br>  
+        <br>
+        <br>
+        <br>
+
+               
+      <p class="lead">
+                
+                  <button class="btn btn-success btn-block btn-lg mb-2" id="btn-posting-box" role="button" onclick="openclose()" href="#">New Vaca 입력하기</button>
+                
+           </p>
+
+          </div><!-- /.col-md-6 -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="wrap">
+    
+      <hr class="my-4">
+      <p class="lead">
+        
+      </p>
+    </div>
+    <div class="form-post" id="posting-box">
+      <div>
+
+
+        <form>
+  <div class="form-row">
+    <div class="form-group col-md-6">
+      <label for="inputEmail4">단어 &amp; 표현</label>
+      <input type="email" class="form-control" id="inputEmail4" placeholder="단어 &amp; 표현">
+    </div>
+    <div class="form-group col-md-6">
+      <label for="inputPassword4">뜻</label>
+      <input type="password" class="form-control" id="inputPassword4" placeholder="뜻">
+    </div>
+  </div>
+  <div class="form-group">
+    <label for="inputAddress">상황설명</label>
+    <input type="text" class="form-control" id="inputAddress" placeholder="예) Rachel이 Ross의 새 여자친구를 보고 속상해서 한 말">
+  </div>
+          <div class="form-group">
+          <label for="exampleFormControlInput1">사전 URL</label>
+          <input class="form-control" id="posting-url" placeholder="네이버 사전 등 찾아본 사전 URL">
+        </div>
+        <div class="form-group">
+          <label for="exampleFormControlTextarea1">내 코멘트</label>
+          <textarea class="form-control" id="posting-comment" placeholder="자유롭게 memo"rows="2"></textarea>
+        </div>
+
+
+  <div class="form-row">
+    <div class="form-group col-md-6">
+      <label for="inputCity">드라마 제목</label>
+            <input type="email" class="form-control" id="inputEmail4" placeholder="예) 프렌즈">
+
+
+      
+    </div>
+    <div class="form-group col-md-3">
+      <label for="inputState">시즌</label>
+      <input type="email" class="form-control" id="inputEmail4" placeholder="1st ~ 10th">
+
+    </div>
+       <div class="form-group col-md-3">
+      <label for="inputState">에피소드</label>
+            <input type="email" class="form-control" id="inputEmail4" placeholder="1 ~ 30">
+
+    </div>
+    
+  </div>
+  <div class="form-group">
+    
+    </div>
+  </div>
+  
+</form>
+
+
+        <button class="btn btn-primary" onclick="posting()">저장</button>
+      </div>
+    </div>
+    
+<div class="container">
+  <div class="card-columns">
+    <div class="card">
+  <h4 class="card-header">단어 &amp; 표현 <div class="action">
+<a class="gr-button gr-button--small" href="/user/new" rel="nofollow">사전보기</a>
+</div>
+   </h4> 
+
+
+  <div class="card-body">
+    <h5 class="card-title">뜻 설명</h5>
+    <ul class="list-group list-group-flush">
+  <li class="list-group-item"><h5>상황설명</h5></li>
+</ul>
+    <p class="card-text">내 코멘트</p>
+<div class="greyText smallText left">
+     From:
+       <a href="/quotes/tag/dreams">드라마 제목</a>,
+       <a href="/quotes/tag/imagination">시즌</a>,
+       <a href="/quotes/tag/psychology">에피소드</a>
+   </div>
+  </div>
+</div>
+
+<div class="card">
+  <h4 class="card-header">단어 &amp; 표현 
+   </h4> 
+
+
+  <div class="card-body">
+    <h5 class="card-title">뜻 설명</h5>
+    <ul class="list-group list-group-flush">
+  <li class="list-group-item"><h5>상황설명</h5></li>
+</ul>
+    <p class="card-text">내 코멘트</p>
+<div class="greyText smallText left">
+     From:
+       <a href="/quotes/tag/dreams">드라마 제목</a>,
+       <a href="/quotes/tag/imagination">시즌</a>,
+       <a href="/quotes/tag/psychology">에피소드</a>
+   </div>
+  </div>
+</div>
+
+<div class="card">
+  <h4 class="card-header">단어 &amp; 표현 
+   </h4> 
+
+
+  <div class="card-body">
+    <h5 class="card-title">뜻 설명</h5>
+    <ul class="list-group list-group-flush">
+  <li class="list-group-item"><h5>상황설명</h5></li>
+</ul>
+    <p class="card-text">내 코멘트</p>
+<div class="greyText smallText left">
+     From:
+       <a href="/quotes/tag/dreams">드라마 제목</a>,
+       <a href="/quotes/tag/imagination">시즌</a>,
+       <a href="/quotes/tag/psychology">에피소드</a>
+       <a href="#" class="btn btn-primary">사전보기</a>
+   </div>
+  </div>
+</div>
+
+
+
+</div>
+</div>
+
+
+
+</body></html>
